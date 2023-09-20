@@ -16,7 +16,7 @@ public class MainController {
 
 	@GetMapping({"/status"})
 	public String status(){
-		return "ok";
+		return passwordEncoder.encode("1234");
 	}
 	
 	@GetMapping({"/status2"})
