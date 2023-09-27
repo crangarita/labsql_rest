@@ -38,12 +38,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	public void configurerGlobal(AuthenticationManagerBuilder build) throws Exception{
-		PasswordEncoder encoder = PasswordEncoderFactories
-					.createDelegatingPasswordEncoder();
+		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		UserBuilder users = User.builder().passwordEncoder(encoder::encode);
 		
-		build.userDetailsService(userDetailsService)
-		.passwordEncoder(passwordEncoder);
+		build.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 		
 	}
 
@@ -57,9 +55,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtService))
 		.csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors();
-		
-
 	}
-	
 }
 

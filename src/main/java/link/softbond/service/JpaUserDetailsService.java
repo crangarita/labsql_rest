@@ -20,7 +20,8 @@ import link.softbond.repositorios.UsuarioRepository;
 //import com.encrypta.backendapp.model.entities.Rol;
 
 @Service ("jpaUserDetailsService")
-public class JpaUserDetailsService implements UserDetailsService {
+public class
+JpaUserDetailsService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;

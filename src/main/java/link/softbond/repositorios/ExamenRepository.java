@@ -10,7 +10,4 @@ import link.softbond.entities.Opcion;
 
 public interface ExamenRepository extends JpaRepository<Examen, Integer> {
 
-	
-
-
 }

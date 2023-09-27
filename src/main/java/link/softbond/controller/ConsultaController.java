@@ -86,9 +86,5 @@ public class ConsultaController {
 		return result;
 
 	}
-	
-	
-	
 
-	
 }
