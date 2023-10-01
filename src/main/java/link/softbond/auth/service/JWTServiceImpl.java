@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import link.softbond.entities.Usuario;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -65,10 +66,9 @@ public class JWTServiceImpl implements JWTService {
 
 	@Override
 	public Claims getClaims(String token) {
-		Claims claims = Jwts.parser()
+		return Jwts.parser()
 			.setSigningKey(SECRET.getBytes())
 			.parseClaimsJws(resolve(token)).getBody();
-		return claims;
 	}
 
 	@Override
@@ -94,6 +94,21 @@ public class JWTServiceImpl implements JWTService {
 		}
 		return null;
 		
+	}
+
+	public String generarToken(Usuario usuario) {
+
+		Claims claims = Jwts.claims();
+		claims.put("idUser", usuario.getId());
+
+		return Jwts.builder().setClaims(claims).setSubject(usuario.getEmail())
+				.signWith(SignatureAlgorithm.HS512, SECRET.getBytes()).setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE)).compact();
+	}
+
+
+	public Integer getId(String token) {
+		return (Integer) getClaims(token).get("idUser");
 	}
 
 }

@@ -20,4 +20,11 @@ public class UserController {
         return usuarioService.registerUsuario(usuario);
 
     }
+
+    @GetMapping("/confirmar/{token}")
+    public String confirmarCuenta(@PathVariable String token){
+
+        return usuarioService.confirmarCuenta(token);
+
+    }
 }
