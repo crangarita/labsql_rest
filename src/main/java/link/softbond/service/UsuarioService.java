@@ -43,7 +43,7 @@ public class UsuarioService {
 			return new Response(false, "El usuario ya existe", null, 0);
 		}
 
-		usuario.setEstado("A");
+		usuario.setEstado("B");
 		usuario.setClave(new BCryptPasswordEncoder().encode(usuario.getClave()));
 
 		usuarioRepository.save(usuario);
@@ -63,12 +63,12 @@ public class UsuarioService {
 			Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
 
 			if (usuario != null) {
-				if(!usuario.getEstado().contentEquals("A")){
+				if(usuario.getEstado().contentEquals("A")){
 					//html = emailService.getHtml("Correo ya confirmado","");
 					html = "Correo ya confirmado";
 					return html;
 				}
-				usuario.setEstado("B");
+				usuario.setEstado("A");
 				usuarioRepository.save(usuario);
 				//html = emailService.getHtml("Cuenta creada y correo confirmado exitosamente.","");
 				html = "Cuenta creada y correo confirmado exitosamente.";

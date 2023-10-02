@@ -103,12 +103,21 @@ public class JWTServiceImpl implements JWTService {
 
 		return Jwts.builder().setClaims(claims).setSubject(usuario.getEmail())
 				.signWith(SignatureAlgorithm.HS512, SECRET.getBytes()).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE)).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + 86400000)).compact();
 	}
 
 
 	public Integer getId(String token) {
-		return (Integer) getClaims(token).get("idUser");
+		if(token != null){
+			Claims claims = Jwts.parser()
+					.setSigningKey(SECRET.getBytes())
+					.parseClaimsJws(token).getBody();
+
+			return (Integer) claims.get("idUser");
+		}else {
+			return null;
+		}
+
 	}
 
 }
