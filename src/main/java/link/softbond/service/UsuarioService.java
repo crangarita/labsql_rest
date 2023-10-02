@@ -84,7 +84,7 @@ public class UsuarioService {
 			return html;
 		}
 	}
-	
+
 	public String generarEnlaceConfirmacion(String token) {
 		String tokenCodificado = UriUtils.encode(token, "UTF-8");
 		return UriComponentsBuilder.fromHttpUrl(appBaseUrl.concat("/users/confirmar"))

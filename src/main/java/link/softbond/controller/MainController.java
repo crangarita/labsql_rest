@@ -1,5 +1,6 @@
 package link.softbond.controller;
 
+import link.softbond.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,8 @@ public class MainController {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private EmailService emailService;
 
 	@GetMapping({"/status"})
 	public String status(){
@@ -21,6 +24,12 @@ public class MainController {
 	
 	@GetMapping({"/status2"})
 	public String status2(){
+		return "ok";
+	}
+
+	@GetMapping({"/status3"})
+	public String status3(){
+		emailService.sendListEmail("juanpablocorreatarazona@gmail.com", "TEST");
 		return "ok";
 	}
 	

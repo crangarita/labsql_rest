@@ -17,8 +17,4 @@ public class GlobalVariables {
         return baseUrl;
     }
 
-    @Bean
-    public JavaMailSender javaMailSender() {
-        return new JavaMailSenderImpl();
-    }
 }
