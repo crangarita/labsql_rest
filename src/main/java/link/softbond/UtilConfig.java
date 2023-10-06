@@ -1,5 +1,6 @@
 package link.softbond;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,13 @@ public class UtilConfig {
     public Logger logger() {
         return LoggerFactory.getLogger("MiLogger");
     }
-	
+
+	@Value("${app.baseurl}")
+	private String baseUrl;
+
+	@Bean
+	public String getBaseUrl() {
+		return baseUrl;
+	}
 
 }

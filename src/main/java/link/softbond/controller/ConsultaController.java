@@ -51,7 +51,7 @@ public class ConsultaController {
 	@Autowired
 	private DBRepository dBRepository;
 
-	
+
 	@GetMapping({"/{id}/practicas"})
 	public Response consultasProblema(@PathVariable Integer id){
 		

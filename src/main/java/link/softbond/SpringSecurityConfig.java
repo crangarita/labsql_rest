@@ -2,7 +2,7 @@ package link.softbond;
 
 import javax.servlet.Filter;
 
-import org.slf4j.Logger;
+import link.softbond.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,9 +20,6 @@ import link.softbond.auth.filter.JWTAuthenticationFilter;
 import link.softbond.auth.filter.JWTAuthorizationFilter;
 import link.softbond.auth.service.JWTService;
 
-import link.softbond.service.JpaUserDetailsService;
-
-
 @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true)
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -31,7 +28,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private JpaUserDetailsService userDetailsService;
+	private UsuarioService usuarioService;
 	
 	@Autowired
 	private JWTService jwtService;
@@ -41,7 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		UserBuilder users = User.builder().passwordEncoder(encoder::encode);
 		
-		build.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+		build.userDetailsService(usuarioService).passwordEncoder(passwordEncoder);
 		
 	}
 
