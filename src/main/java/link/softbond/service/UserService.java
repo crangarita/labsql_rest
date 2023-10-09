@@ -105,7 +105,7 @@ public class UserService implements UserDetailsService {
 			Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
 
 			if (usuario != null) {
-				if(!usuario.getEstado().contentEquals("A")){
+				if(usuario.getEstado().contentEquals("A")){
 					//html = emailService.getHtml("Correo ya confirmado","");
 					html = "Correo ya confirmado";
 					return html;
