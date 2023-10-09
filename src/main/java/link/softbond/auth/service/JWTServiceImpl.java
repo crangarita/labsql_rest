@@ -106,7 +106,6 @@ public class JWTServiceImpl implements JWTService {
 				.setExpiration(new Date(System.currentTimeMillis() + 86400000)).compact();
 	}
 
-
 	public Integer getId(String token) {
 		if(token != null){
 			Claims claims = Jwts.parser()

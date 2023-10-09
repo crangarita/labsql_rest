@@ -1,6 +1,11 @@
 package link.softbond.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import link.softbond.auth.service.JWTService;
+import link.softbond.auth.service.JWTServiceImpl;
+import link.softbond.dto.UsuarioDTO;
 import link.softbond.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Slf4j
-public class UsuarioService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -43,21 +46,23 @@ public class UsuarioService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String usuarioEmail) throws UsernameNotFoundException {
 		Usuario usuario = usuarioRepository.findByEmail(usuarioEmail);
 
+		if(usuario == null) {
+			usuario = usuarioRepository.findByUsuario(usuarioEmail);
+		}
+
 		if (usuario == null) {
 			log.error("Error Login: no existe el usuario " + usuarioEmail);
 			throw new UsernameNotFoundException("Usuario no existe en el sistema");
 		}
-
 		if (!usuario.getEstado().contentEquals("A")) {
 			log.error("Error Login: el usuario " + usuarioEmail + " aun no se ha validado");
 			throw new UsernameNotFoundException("Usuario no se ha validado");
 		}
 
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
 		authorities.add(new SimpleGrantedAuthority("USUARIO"));
 
-		return new User(usuario.getEmail(), usuario.getClave(), true, true, true, true, authorities);
+		return new User(usuario.getEmail(), usuario.getClave(), authorities);
 	}
 	
 	public Usuario getUsuarioCurrent() {
@@ -70,22 +75,20 @@ public class UsuarioService implements UserDetailsService {
 		return usuario;
 	}
 
-	public Response registrarUsuario(Usuario usuario) {
+	public Response registrarUsuario(UsuarioDTO usuarioDTO) {
 
-		Usuario usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+		Usuario usuarioExistente = usuarioRepository.findByEmail(usuarioDTO.getEmail());
 
 		if (usuarioExistente != null) {
 			return new Response(false, "El usuario ya existe", null, 0);
 		}
 
-		usuario.setEstado("B");
-		usuario.setClave(new BCryptPasswordEncoder().encode(usuario.getClave()));
+		usuarioExistente.setEstado("B");
+		usuarioExistente.setClave(new BCryptPasswordEncoder().encode(usuarioDTO.getClave()));
+		usuarioRepository.save(usuarioExistente);
 
-		usuarioRepository.save(usuario);
-
-		String tokenUsuario = jwtService.generarToken(usuario);
-
-		emailService.sendListEmail(usuario.getEmail(), generarEnlaceConfirmacion(tokenUsuario));
+		String tokenUsuario = jwtService.generarToken(usuarioExistente);
+		emailService.sendListEmail(usuarioExistente.getEmail(), generarEnlaceConfirmacion(tokenUsuario));
 
 		return new Response(true, "Usuario registrado", null, 0);
 	}
@@ -98,7 +101,7 @@ public class UsuarioService implements UserDetailsService {
 			Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
 
 			if (usuario != null) {
-				if(usuario.getEstado().contentEquals("A")){
+				if(!usuario.getEstado().contentEquals("A")){
 					//html = emailService.getHtml("Correo ya confirmado","");
 					html = "Correo ya confirmado";
 					return html;
@@ -120,7 +123,7 @@ public class UsuarioService implements UserDetailsService {
 		}
 	}
 
-	public void reestablecerContrasena(String email, String actualContraseña, String nuevaContraseña) {
+	public void reestablecerContrasena(String email, String nuevaContraseña) {
 
 		Usuario user = usuarioRepository.findByEmail(email);
 
@@ -129,10 +132,6 @@ public class UsuarioService implements UserDetailsService {
 		}
 		if (nuevaContraseña.equals(user.getEmail())){
 			throw new IllegalArgumentException("La nueva contraseña no puede ser igual al correo electrónico");
-		}
-
-		if (!new BCryptPasswordEncoder().matches(actualContraseña, user.getClave())) {
-			throw new IllegalArgumentException("Contraseña actual incorrecta");
 		}
 
 		user.setClave(new BCryptPasswordEncoder().encode(nuevaContraseña));
@@ -149,14 +148,28 @@ public class UsuarioService implements UserDetailsService {
 			throw new UsernameNotFoundException("No existe el usuario con el correo electrónico proporcionado");
 		}
 
-		String tempcontrasena = generarContrasena(10);
-		user.setClave(new BCryptPasswordEncoder().encode(tempcontrasena));
+		String tempcontrasena = generarContrasena(6);
+		user.setCodigoTemporal(tempcontrasena);
 		try {
 			usuarioRepository.save(user);
 		} catch (Exception e) {
 			throw new RuntimeException("Error al guardar el usuario");
 		}
-		emailService.sendListEmail(email, "Contraseña de Recuperación: \n" +tempcontrasena);
+		emailService.sendListEmail(email, "Código de Recuperación: \n" +tempcontrasena);
+	}
+
+	public Response confirmarCodigo(String email, String codigoTemporal) {
+		Usuario user = usuarioRepository.findByEmail(email);
+		if (user == null) {
+			return new Response(false, "No existe el usuario con el correo electrónico proporcionado", null, 0);
+		}
+		if (!codigoTemporal.equals(user.getCodigoTemporal())) {
+			return new Response(false, "Código Incorrecto", null, 0);
+		}
+
+		String token = jwtService.generarToken(user);
+
+		return new Response(true, "Código Correcto", token, 0);
 	}
 
 	public String generarEnlaceConfirmacion(String token) {

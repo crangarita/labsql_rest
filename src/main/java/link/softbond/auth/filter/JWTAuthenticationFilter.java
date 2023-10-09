@@ -38,10 +38,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	private AuthenticationManager authenticationManager;
 	private JWTService jwtService;
-	
-	
 	private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-
 
 	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
 
@@ -49,7 +46,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
 		
 		this.jwtService = jwtService;
-
 	}
 
 	@Override
@@ -78,7 +74,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				logger.error("Usuario: " + username + " Err " + e.getMessage());
 				e.printStackTrace();
 			}

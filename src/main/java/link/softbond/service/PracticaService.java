@@ -1,6 +1,5 @@
 package link.softbond.service;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class PracticaService {
 	private ConsultaRepository consultaRepository;
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private UserService userService;
 	
 	public Response registrarPractica(Integer consultaId, String sql) {
 		
@@ -57,7 +56,7 @@ public class PracticaService {
 	public Response ejecutar(Integer consultaId, String sql) {
 		
 		Optional<Consulta> consulta = consultaRepository.findById(consultaId);
-		Usuario usuario = usuarioService.getUsuarioCurrent();
+		Usuario usuario = userService.getUsuarioCurrent();
 		
 		if (!consulta.isPresent()) {
 			return Response.crear(false, "Error: consulta no existe", null);

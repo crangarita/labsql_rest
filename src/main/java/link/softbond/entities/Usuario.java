@@ -2,6 +2,8 @@ package link.softbond.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -26,13 +28,15 @@ public class Usuario implements Serializable {
 	private Integer id;
 
 	private String usuario;
-
 	private String nombre;
-
+	@Column(nullable = false, length = 255)
+	@NotEmpty
 	private String clave;
-
+	@Column(nullable = false, length = 255)
+	@NotEmpty
+	@Email
 	private String email;
-
 	private String estado;
+	private String codigoTemporal;
 
 }
