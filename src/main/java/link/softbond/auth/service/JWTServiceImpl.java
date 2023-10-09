@@ -96,16 +96,15 @@ public class JWTServiceImpl implements JWTService {
 		
 	}
 
-	public String generarToken(Usuario usuario) {
+	public String generarToken(Usuario usuario, long expira) {
 
 		Claims claims = Jwts.claims();
 		claims.put("idUser", usuario.getId());
 
 		return Jwts.builder().setClaims(claims).setSubject(usuario.getEmail())
 				.signWith(SignatureAlgorithm.HS512, SECRET.getBytes()).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + 86400000)).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + expira)).compact();
 	}
-
 
 	public Integer getId(String token) {
 		if(token != null){

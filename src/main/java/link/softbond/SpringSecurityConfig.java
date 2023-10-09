@@ -1,8 +1,6 @@
 package link.softbond;
 
-import javax.servlet.Filter;
-
-import link.softbond.service.UsuarioService;
+import link.softbond.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,7 +26,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private UsuarioService usuarioService;
+	private UserService userService;
 	
 	@Autowired
 	private JWTService jwtService;
@@ -38,7 +36,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		UserBuilder users = User.builder().passwordEncoder(encoder::encode);
 		
-		build.userDetailsService(usuarioService).passwordEncoder(passwordEncoder);
+		build.userDetailsService(userService).passwordEncoder(passwordEncoder);
 		
 	}
 
