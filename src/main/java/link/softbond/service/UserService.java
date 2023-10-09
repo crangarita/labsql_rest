@@ -83,6 +83,7 @@ public class UserService implements UserDetailsService {
 			return new Response(false, "El usuario ya existe", null, 0);
 		}
 
+		usuarioExistente = new Usuario();
 		usuarioExistente.setEstado("B");
 		usuarioExistente.setClave(new BCryptPasswordEncoder().encode(usuarioDTO.getClave()));
 		usuarioRepository.save(usuarioExistente);
