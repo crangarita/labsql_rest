@@ -88,6 +88,7 @@ public class UserService implements UserDetailsService {
 		usuarioExistente.setUsuario(usuarioDTO.getUsuario());
 		usuarioExistente.setEstado("B");
 		usuarioExistente.setClave(new BCryptPasswordEncoder().encode(usuarioDTO.getClave()));
+		usuarioExistente.setNombre(usuarioDTO.getNombre());
 		usuarioRepository.save(usuarioExistente);
 
 		String tokenUsuario = jwtService.generarToken(usuarioExistente, 86400000);
