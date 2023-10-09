@@ -84,6 +84,8 @@ public class UserService implements UserDetailsService {
 		}
 
 		usuarioExistente = new Usuario();
+		usuarioExistente.setEmail(usuarioDTO.getEmail());
+		usuarioExistente.setUsuario(usuarioDTO.getUsuario());
 		usuarioExistente.setEstado("B");
 		usuarioExistente.setClave(new BCryptPasswordEncoder().encode(usuarioDTO.getClave()));
 		usuarioRepository.save(usuarioExistente);
