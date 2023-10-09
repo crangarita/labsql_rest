@@ -87,7 +87,7 @@ public class UserService implements UserDetailsService {
 		usuarioExistente.setClave(new BCryptPasswordEncoder().encode(usuarioDTO.getClave()));
 		usuarioRepository.save(usuarioExistente);
 
-		String tokenUsuario = jwtService.generarToken(usuarioExistente);
+		String tokenUsuario = jwtService.generarToken(usuarioExistente, 86400000);
 		emailService.sendListEmail(usuarioExistente.getEmail(), generarEnlaceConfirmacion(tokenUsuario));
 
 		return new Response(true, "Usuario registrado", null, 0);
@@ -167,7 +167,7 @@ public class UserService implements UserDetailsService {
 			return new Response(false, "Código Incorrecto", null, 0);
 		}
 
-		String token = jwtService.generarToken(user);
+		String token = jwtService.generarToken(user, 900000);
 
 		return new Response(true, "Código Correcto", token, 0);
 	}

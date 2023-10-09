@@ -19,7 +19,7 @@ public interface JWTService {
 	public String getUsername(String token);
 	public Collection<? extends GrantedAuthority> getRoles(String token) throws IOException;
 	public String resolve(String token);
-	public String generarToken(Usuario usuario);
+	public String generarToken(Usuario usuario, long expira);
 	public Integer getId(String token);
 
 }
