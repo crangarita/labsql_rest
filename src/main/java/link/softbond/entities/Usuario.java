@@ -37,6 +37,7 @@ public class Usuario implements Serializable {
 	@Email
 	private String email;
 	private String estado;
+	@Column(name="codigo_temporal")
 	private String codigoTemporal;
 
 }
