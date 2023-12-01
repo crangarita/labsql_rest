@@ -9,5 +9,7 @@ import link.softbond.entities.Practica;
 public interface PracticaRepository extends JpaRepository<Practica, Integer> {
 	
 	public List<Practica> findByUsuarioAndConsultaId(Integer usuario, Integer idconsulta);
+	
+	public List<Practica> findByUsuario(Integer usuario);
 
 }

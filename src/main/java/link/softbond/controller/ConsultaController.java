@@ -41,7 +41,18 @@ public class ConsultaController {
 	
 	@Autowired
 	private DBRepository dBRepository;
+	
+	
+	@GetMapping("/practicas/usuario")
+public Response consultasPracticasUsuario(){
+		
+		
+		Usuario usuario = userService.getUsuarioCurrent();
+		return practicaService.listaPracticasUsuario(usuario.getId());
+		
+		
 
+	}
 
 	@GetMapping({"/{id}/practicas"})
 	public Response consultasProblema(@PathVariable Integer id){

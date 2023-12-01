@@ -32,6 +32,11 @@ public class PracticaService {
 	@Autowired
 	private UserService userService;
 	
+	public Response listaPracticasUsuario(Integer usuarioId) {
+		List<Practica>practicas=practicaRepository.findByUsuario(usuarioId);
+		return Response.crear(true, "Listado de practicas del usuario", practicas);
+	}
+	
 	public Response registrarPractica(Integer consultaId, String sql) {
 		
 		Optional<Consulta> consulta = consultaRepository.findById(consultaId);
