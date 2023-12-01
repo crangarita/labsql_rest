@@ -30,7 +30,7 @@ public class JWTServiceImpl implements JWTService {
 	
 	public static final String SECRET = Base64Utils.encodeToString("Programacion.Web.UFPS.2023".getBytes());
 	
-	public static final long EXPIRATION_DATE = 1800000L;
+	public static final long EXPIRATION_DATE = 604800000L;
 	
 	public static final String TOKEN_PREFIX = "Bearer ";
 	

@@ -171,7 +171,7 @@ public class UserService implements UserDetailsService {
 			return new Response(false, "Código Incorrecto", null, 0);
 		}
 
-		String token = jwtService.generarToken(user, 900000);
+		String token = jwtService.generarToken(user, 9000000);
 
 		return new Response(true, "Código Correcto", token, 0);
 	}

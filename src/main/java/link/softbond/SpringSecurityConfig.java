@@ -42,7 +42,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/", "/status", "/login", "/users/register","/status3", "/users/confirmar/**").permitAll()
+		http.authorizeRequests().antMatchers("/", "/status", "/login", "/users/register","/status3", "/users/confirmar/**", "/users/reestablecer/email" ,"/users/reestablecer/codigo").permitAll()
 		.antMatchers("/v2/api-docs/**", "/swagger-ui/*", "/swagger*","/swagger-resources/**","/webjars/**" ).permitAll()
 		.anyRequest().authenticated()
 		.and()
