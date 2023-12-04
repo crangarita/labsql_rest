@@ -23,9 +23,9 @@ public class DBService {
     
     public void seleccionar(String database) {
     	String driverClassName = "com.mysql.cj.jdbc.Driver";
-    	String url = "jdbc:mysql://roundhouse.proxy.rlwy.net:35887/"+database+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    	String url = "jdbc:mysql://localhost:3306/"+database+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     	String username = "root";
-    	String password = "1eec1dbBG4eD62eEEcGADC3aEAG1fCEH";
+    	String password = "Lab2020.";
         dataSourceConfig.setDataSourceProperties(driverClassName, url, username, password);
         dataSourceConfig.updateDataSource();
     }
