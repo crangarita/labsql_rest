@@ -4,17 +4,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import link.softbond.util.Response;
 import link.softbond.entities.Problema;
 import link.softbond.repositorios.ProblemaRepository;
+import link.softbond.service.FileService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -24,6 +33,8 @@ public class ProblemaController {
 	@Autowired
 	private ProblemaRepository problemaRepository;
 
+	@Autowired
+	private FileService fileService;
 	@GetMapping
 	public Response listar(){
 		
@@ -100,5 +111,23 @@ public class ProblemaController {
 	public String status(){
 		return "ok";
 	}
+	
+	@GetMapping("/files/view/{filename}")
+	  @ResponseBody
+	  public ResponseEntity<Resource> viewFile(@PathVariable String filename) {
+	    Resource file = fileService.loadFile(filename );
+	    
+	    HttpHeaders headers = new HttpHeaders();
+
+	    headers.add("content-disposition", "inline; filename="+file.getFilename());
+	    headers.setContentType(MediaType.parseMediaType("image/jpeg"));
+	    
+	    ResponseEntity<Resource> response = new ResponseEntity<Resource>(
+	            file, headers, HttpStatus.OK);
+
+	    return response;
+	    
+
+	  }
 	
 }
