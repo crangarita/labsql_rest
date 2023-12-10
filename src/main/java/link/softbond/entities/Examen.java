@@ -32,6 +32,8 @@ public class Examen implements Serializable {
 	private Timestamp fechafin;
 	
 	private Integer cantidad;
+
+	private String token;
 	
 	@ManyToOne
 	@JoinColumn(name="problema")

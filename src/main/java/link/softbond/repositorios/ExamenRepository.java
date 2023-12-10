@@ -10,4 +10,5 @@ import link.softbond.entities.Opcion;
 
 public interface ExamenRepository extends JpaRepository<Examen, Integer> {
 
+    public Examen findByToken(String token);
 }

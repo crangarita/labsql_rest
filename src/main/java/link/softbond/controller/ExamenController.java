@@ -2,12 +2,9 @@ package link.softbond.controller;
 
 import java.util.List;
 
+import link.softbond.service.ExamenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import link.softbond.util.Response;
 import link.softbond.entities.Examen;
@@ -33,6 +30,9 @@ public class ExamenController {
 	private OpcionRepository opcionRepository;
 
 	@Autowired
+	private ExamenService examenService;
+
+	@Autowired
 	private UserService userService;
 	
 	@GetMapping
@@ -43,20 +43,29 @@ public class ExamenController {
 		return Response.crear(true, null, examenes.toArray());
 
 	}
+
+	@PostMapping
+	public Response crear(@RequestBody Examen examen){
+
+		examenRepository.save(examen);
+
+		return Response.crear(true, null, examen);
+
+	}
 	
-	@GetMapping({"/{id}/opciones"})
-	public Response opcionesExamen(@PathVariable Integer id){
+	@GetMapping({"/{token}/generar"})
+	public Response generarExamen(@PathVariable String token){
 		
 		Usuario usuario = userService.getUsuarioCurrent();
 		
-		List<Opcion> opciones = opcionRepository.findByUsuarioAndExamenId(usuario.getId(), id);
+		List<Opcion> opciones = examenService.generarExamen(usuario.getId(), token);
 		
 		return Response.crear(true, null, opciones.toArray());
 		
 	}
 	
-	@GetMapping({"/{id}/generar"})
-	public Response generarExamen(@PathVariable Integer id){
+	@GetMapping({"/{id}/opciones"})
+	public Response opcionesExamen(@PathVariable Integer id){
 		
 		Usuario usuario = userService.getUsuarioCurrent();
 		
