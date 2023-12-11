@@ -26,11 +26,11 @@ public class Opcion implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="consulta")
-	private Problema consulta;
+	private Consulta consulta;
 	
 	@ManyToOne
 	@JoinColumn(name="examen")
-	private Problema examen;
+	private Examen examen;
 	
 	private Integer usuario;
 
