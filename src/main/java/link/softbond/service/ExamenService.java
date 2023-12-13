@@ -4,6 +4,7 @@ import link.softbond.entities.Consulta;
 import link.softbond.entities.Examen;
 import link.softbond.entities.Opcion;
 import link.softbond.entities.Problema;
+import link.softbond.entities.Usuario;
 import link.softbond.repositorios.ExamenRepository;
 import link.softbond.repositorios.OpcionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExamenService {
@@ -22,6 +24,9 @@ public class ExamenService {
 
     @Autowired
     OpcionRepository opcionRepository;
+    
+	@Autowired
+	private UserService userService;
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -29,6 +34,19 @@ public class ExamenService {
         examen.setToken(generateToken());
         examenRepository.save(examen);
 
+    }
+    
+    public List<Opcion> generarExamen(int usuarioId, Integer examenId){
+    	Optional<Examen> examenOptional = examenRepository.findById(examenId);
+    	if(examenOptional.isPresent()) {
+    		Examen examen = examenOptional.get();
+    		String examenToken = examen.getToken();
+    		
+    		return generarExamen(usuarioId, examenToken);
+    		
+    	}
+    	
+    	return null;
     }
 
     public List<Opcion> generarExamen(int usuarioId, String examenToken){
@@ -69,6 +87,24 @@ public class ExamenService {
         }
 
         return token.toString();
+    }
+    
+    
+    public List<Consulta> getConsultas(Integer problemaId) {
+    	
+    	Usuario usuario = userService.getUsuarioCurrent();
+		
+		List<Opcion> opciones = opcionRepository.findByUsuarioAndExamenId(usuario.getId(), problemaId);
+		
+		List<Consulta> consultas = new ArrayList<>();
+		
+		if (!opciones.isEmpty()) {
+			for(Opcion opcion: opciones) {
+				consultas.add(opcion.getConsulta());
+			}
+		}
+		
+		return consultas;
     }
 
 

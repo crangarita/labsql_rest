@@ -120,7 +120,11 @@ public class PracticaService {
 		
 		try {
 			List<Map<String, Object>> result = this.ejecutarQuery(consulta.get().getProblema().getNombrebase(), consulta.get().getSolucion());
-			return Response.crear(true, null, result.toArray());
+			
+			int maxRegistros = 10;
+			List<Map<String, Object>> resultadoLimitado = result.subList(0, Math.min(result.size(), maxRegistros));
+
+			return Response.crear(true, null, resultadoLimitado.toArray());
 		}catch(Exception e) {
 			return Response.crear(false, "Error: se ha generado error al intentar ejecutar el ejemplo", null);
 		}

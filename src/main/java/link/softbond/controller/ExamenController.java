@@ -1,6 +1,7 @@
 package link.softbond.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import link.softbond.service.ExamenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,11 @@ public class ExamenController {
 		Usuario usuario = userService.getUsuarioCurrent();
 		
 		List<Opcion> opciones = opcionRepository.findByUsuarioAndExamenId(usuario.getId(), id);
+		
+		if (opciones.isEmpty()) {
+			examenService.generarExamen(usuario.getId(), id);
+			opciones = opcionRepository.findByUsuarioAndExamenId(usuario.getId(), id);
+		}
 		
 		return Response.crear(true, null, opciones.toArray());
 		

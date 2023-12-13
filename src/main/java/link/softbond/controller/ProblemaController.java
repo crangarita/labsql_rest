@@ -21,8 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import link.softbond.util.Response;
+import link.softbond.entities.Consulta;
 import link.softbond.entities.Problema;
 import link.softbond.repositorios.ProblemaRepository;
+import link.softbond.service.ExamenService;
 import link.softbond.service.FileService;
 
 @RestController
@@ -35,6 +37,10 @@ public class ProblemaController {
 
 	@Autowired
 	private FileService fileService;
+	
+	@Autowired
+	private ExamenService examenService;
+	
 	@GetMapping
 	public Response listar(){
 		
@@ -59,7 +65,12 @@ public class ProblemaController {
 		Optional<Problema> problemaOpt = problemaRepository.findById(id);
 		
 		if (problemaOpt.isPresent()) {
-			return Response.crear(true, null, problemaOpt.get().getConsultas().toArray());
+			if (problemaOpt.get().getEstado()==1) {
+				return Response.crear(true, null, problemaOpt.get().getConsultas().toArray());
+			}else {
+				List<Consulta> consultas = examenService.getConsultas(id);
+				return Response.crear(true, null, consultas.toArray());
+			}
 		}
 		
 		return Response.crear(true, null, null);

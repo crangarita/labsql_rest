@@ -28,10 +28,13 @@ public class                                  Consulta implements Serializable {
 	
 	private String explicacion;
 	
+	@JsonIgnore
 	private String solucion;
 	
+	@JsonIgnore
 	private String explicsolucion;
 	
+	@JsonIgnore
 	private String solucionalternativa;
 	
 	private Integer numpracticas;
