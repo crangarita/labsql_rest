@@ -162,19 +162,26 @@ public class UserService implements UserDetailsService {
 		emailService.sendListEmail(email, "Código de Recuperación: \n" +tempcontrasena);
 	}
 
-	public Response confirmarCodigo(String email, String codigoTemporal) {
-		Usuario user = usuarioRepository.findByEmail(email);
-		if (user == null) {
-			return new Response(false, "No existe el usuario con el correo electrónico proporcionado", null, 0);
-		}
-		if (!codigoTemporal.equals(user.getCodigoTemporal())) {
-			return new Response(false, "Código Incorrecto", null, 0);
-		}
+	//Confirmar codigo y actualizar contraseña
+		public Response confirmarCodigo(Usuario usuario) {
+			Usuario user = usuarioRepository.findByEmail(usuario.getEmail());
+			if (user == null) {
+				return new Response(false, "No existe el usuario con el correo electrónico proporcionado", null, 0);
+			}
+			
+			if (!usuario.getCodigoTemporal().equals(user.getCodigoTemporal())) {
+				return new Response(false, "Código Incorrecto", null, 0);
+			}
+			if (usuario.getClave().equals(user.getEmail())){
+				throw new IllegalArgumentException("La nueva contraseña no puede ser igual al correo electrónico");
+			}
 
-		String token = jwtService.generarToken(user, 9000000);
+			user.setClave(new BCryptPasswordEncoder().encode(usuario.getClave()));
 
-		return new Response(true, "Código Correcto", token, 0);
-	}
+			usuarioRepository.save(user);
+
+			return new Response(true, "Código Correcto", null, 0);
+		}
 
 	public String generarEnlaceConfirmacion(String token) {
 		String tokenCodificado = UriUtils.encode(token, "UTF-8");

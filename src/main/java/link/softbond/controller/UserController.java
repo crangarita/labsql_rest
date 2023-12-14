@@ -1,6 +1,7 @@
 package link.softbond.controller;
 
 import link.softbond.dto.UsuarioDTO;
+import link.softbond.entities.Usuario;
 import link.softbond.model.request.UserRegisterRequest;
 import link.softbond.service.UserService;
 import link.softbond.util.Response;
@@ -44,9 +45,9 @@ public class UserController {
     }
 
     @PostMapping("/reestablecer/codigo")
-    public Response codigoTemporal(@RequestParam String email,@RequestParam String codigoTemporal) {
+    public Response codigoTemporal(@RequestBody Usuario usuario) {
 
-        return userService.confirmarCodigo(email, codigoTemporal);
+        return userService.confirmarCodigo(usuario);
     }
 
     @PostMapping({"/reestablecer"})
