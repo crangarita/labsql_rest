@@ -23,7 +23,7 @@ public class ConsultaService {
             Consulta consultaReturnOld=consultaCurrentOld.get();
             consultaReturnOld.setUltimaOpcion(false);
              //Actualizo la consulta new    
-            Consulta consultaReturnNew=consultaCurrentOld.get();
+            Consulta consultaReturnNew=consultaCurrentNew.get();
             consultaReturnNew.setUltimaOpcion(true);
             //Guardo las consultas
             consultaRepository.save(consultaReturnOld);
