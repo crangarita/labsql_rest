@@ -22,9 +22,13 @@ public class ConsultaService {
             //Actualizo la consulta old
             Consulta consultaReturnOld=consultaCurrentOld.get();
             consultaReturnOld.setUltimaOpcion(false);
-             //Actualizo la consulta new
+             //Actualizo la consulta new    
             Consulta consultaReturnNew=consultaCurrentOld.get();
             consultaReturnNew.setUltimaOpcion(true);
+            //Guardo las consultas
+            consultaRepository.save(consultaReturnOld);
+            consultaRepository.save(consultaReturnNew);
+           
             return Response.crear(true, "Consultas actualizada", true);
         } 
         return Response.crear(false, "Error para actualizar las consultas", null);
