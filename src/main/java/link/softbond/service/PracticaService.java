@@ -131,6 +131,27 @@ public class PracticaService {
 	}
 	
 	
+	public Response actualizarUltimaOpcion(Integer idOld, Integer idNew){
+        //Busco la practica old
+        Optional<Practica>practicaCurrentOld=practicaRepository.findById(idOld);
+        //Busco la practica new
+        Optional<Practica>practicaCurrentNew=practicaRepository.findById(idNew);
+        if(practicaCurrentOld.isPresent() && practicaCurrentNew.isPresent()){
+            //Actualizo la practica old
+            Practica practicaReturnOld=practicaCurrentOld.get();
+            practicaReturnOld.setUltimaOpcion(false);
+             //Actualizo la practica new    
+            Practica practicaReturnNew=practicaCurrentNew.get();
+            practicaReturnNew.setUltimaOpcion(true);
+            //Guardo las practica
+            practicaRepository.save(practicaReturnOld);
+            practicaRepository.save(practicaReturnNew);
+           
+            return Response.crear(true, "Consultas actualizada", true);
+        } 
+        return Response.crear(false, "Error para actualizar las consultas", null);
+    }
+
 	private List<Map<String, Object>> ejecutarQuery(String database, String sql) {
 		
 			List<Map<String, Object>> result = dBRepository.ejecutarConsulta(database, sql);

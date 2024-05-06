@@ -18,7 +18,6 @@ import link.softbond.entities.Usuario;
 import link.softbond.repositorios.ConsultaRepository;
 import link.softbond.repositorios.DBRepository;
 import link.softbond.repositorios.PracticaRepository;
-import link.softbond.service.ConsultaService;
 import link.softbond.service.PracticaService;
 import link.softbond.service.UserService;
 
@@ -41,8 +40,6 @@ public class ConsultaController {
 
 	@Autowired
 	private DBRepository dBRepository;
-	@Autowired
-	private ConsultaService consultaService;
 
 	@GetMapping("/practicas/usuario")
 	public Response consultasPracticasUsuario() {
@@ -52,12 +49,14 @@ public class ConsultaController {
 
 	}
 
-	@GetMapping("/ultima/opcion/{idOld}/old/{idnew}/new")
-	public Response consultasUltimaOpcion(@PathVariable Integer idOld, @PathVariable Integer idNew) {
+	@GetMapping("/practica/opcion/{idOld}/old/{idnew}/new")
+	public Response practicaUltimaOpcion(@PathVariable Integer idOld, @PathVariable Integer idNew) {
 
-		return consultaService.actualizarUltimaOpcion(idOld, idNew);
+		return practicaService.actualizarUltimaOpcion(idOld, idNew);
 
 	}
+
+
 
 	@GetMapping({ "/{id}/practicas" })
 	public Response consultasProblema(@PathVariable Integer id) {

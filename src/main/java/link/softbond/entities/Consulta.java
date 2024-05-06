@@ -41,7 +41,6 @@ public class                                  Consulta implements Serializable {
 	
 	private Integer estado;
 
-	private Boolean ultimaOpcion;
 	
 	@ManyToOne
 	@JoinColumn(name="idproblema")

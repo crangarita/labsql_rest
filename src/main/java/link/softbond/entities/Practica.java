@@ -33,6 +33,9 @@ public class Practica implements Serializable {
 	private LocalDateTime fecha;
 	
 	private Integer estado;
+
+	
+	private Boolean ultimaOpcion;
 	
 	@ManyToOne
 	@JoinColumn(name="idconsulta")
