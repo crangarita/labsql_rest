@@ -18,73 +18,74 @@ import link.softbond.entities.Usuario;
 import link.softbond.repositorios.ConsultaRepository;
 import link.softbond.repositorios.DBRepository;
 import link.softbond.repositorios.PracticaRepository;
-
+import link.softbond.service.ConsultaService;
 import link.softbond.service.PracticaService;
 import link.softbond.service.UserService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping({"/consultas"})
+@RequestMapping({ "/consultas" })
 public class ConsultaController {
-	
+
 	@Autowired
 	private PracticaRepository practicaRepository;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private ConsultaRepository consultaRepository;
-	
+
 	@Autowired
 	private PracticaService practicaService;
-	
+
 	@Autowired
 	private DBRepository dBRepository;
-	
-	
+	@Autowired
+	private ConsultaService consultaService;
+
 	@GetMapping("/practicas/usuario")
-public Response consultasPracticasUsuario(){
-		
-		
+	public Response consultasPracticasUsuario() {
+
 		Usuario usuario = userService.getUsuarioCurrent();
 		return practicaService.listaPracticasUsuario(usuario.getId());
-		
-		
 
 	}
 
-	@GetMapping({"/{id}/practicas"})
-	public Response consultasProblema(@PathVariable Integer id){
-		
-		
+	@GetMapping("/ultima/opcion/{idOld}/old/{idnew}/new")
+	public Response consultasUltimaOpcion(@PathVariable Integer idOld, @PathVariable Integer idNew) {
+
+		return consultaService.actualizarUltimaOpcion(idOld, idNew);
+
+	}
+
+	@GetMapping({ "/{id}/practicas" })
+	public Response consultasProblema(@PathVariable Integer id) {
+
 		Usuario usuario = userService.getUsuarioCurrent();
-		
+
 		List<Practica> practicas = practicaRepository.findByUsuarioAndConsultaId(usuario.getId(), id);
-		
+
 		return Response.crear(true, null, practicas.toArray());
-		
-		
 
 	}
-	
-	@GetMapping({"/{id}/ejemplo"})
-	public Response ejemploConsulta(@PathVariable Integer id){
+
+	@GetMapping({ "/{id}/ejemplo" })
+	public Response ejemploConsulta(@PathVariable Integer id) {
 
 		return practicaService.ejecutarEjemplo(id);
 
 	}
-	
-	
-	@PostMapping({"/{id}/practicas"})
-	public Response ejecutarConsulta(@PathVariable Integer id, @RequestBody Map<String, Object> json){
+
+	@PostMapping({ "/{id}/practicas" })
+	public Response ejecutarConsulta(@PathVariable Integer id, @RequestBody Map<String, Object> json) {
 
 		Usuario usuario = userService.getUsuarioCurrent();
-		
+
 		String sql = (String) json.get("sql");
-		
+
 		Response result = practicaService.ejecutar(id, sql);
-		
+
 		return result;
 
 	}
