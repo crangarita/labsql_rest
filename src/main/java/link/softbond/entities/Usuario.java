@@ -39,5 +39,8 @@ public class Usuario implements Serializable {
 	private String estado;
 	@Column(name="codigo_temporal")
 	private String codigoTemporal;
+	@ManyToOne
+	@JoinColumn(name="rol_id")
+	private Rol rol;
 
 }
