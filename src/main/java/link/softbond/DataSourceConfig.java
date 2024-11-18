@@ -12,11 +12,13 @@ import javax.sql.DataSource;
 public class DataSourceConfig {
     
     private String driverClassName = "com.mysql.cj.jdbc.Driver";
-    private String url = "jdbc:mysql://junction.proxy.rlwy.net:22727/railway?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    		//"jdbc:mysql://localhost:3306/laboratorionew?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    private String url ="jdbc:mysql://localhost:3306/laboratorionew?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    		   
+    		//"jdbc:mysql://junction.proxy.rlwy.net:22727/railway?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private String username = "root";
-    private String password = "wbDvCplgtLHJPHNcmKrvaFsAvuuSvQzX";
-    		//"Lab2020.";
+    private String password = "Lab2020.";
+    		//"wbDvCplgtLHJPHNcmKrvaFsAvuuSvQzX";
+    		
     
     private DataSource dataSource;
 

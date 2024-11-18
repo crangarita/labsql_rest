@@ -6,13 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,11 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import link.softbond.util.Response;
+import link.softbond.dto.ProblemaDTO;
 import link.softbond.entities.Consulta;
 import link.softbond.entities.Problema;
 import link.softbond.repositorios.ProblemaRepository;
 import link.softbond.service.ExamenService;
 import link.softbond.service.FileService;
+import link.softbond.service.ProblemaService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -34,6 +31,8 @@ public class ProblemaController {
 	
 	@Autowired
 	private ProblemaRepository problemaRepository;
+	@Autowired
+	private ProblemaService problemaService;
 
 	@Autowired
 	private FileService fileService;
@@ -41,7 +40,7 @@ public class ProblemaController {
 	@Autowired
 	private ExamenService examenService;
 	
-	@GetMapping
+	@GetMapping("/todos")
 	public Response listar(){
 		
 		List<Problema> problemas = problemaRepository.findAll();
@@ -49,6 +48,16 @@ public class ProblemaController {
 		return Response.crear(true, null, problemas.toArray());
 
 	}
+	@GetMapping("/{id}/consultas/profesor")
+	public Response listaConsultasProblema(@PathVariable Integer id) {
+		return problemaService.listaConsultas(id);
+	}
+	
+	@PostMapping("/save")
+	public Response saveProblema(@RequestPart ProblemaDTO problema, @RequestPart("file") MultipartFile file) {
+		return  problemaService.saveProblema(problema, file);
+	}
+	
 	
 	@GetMapping({"/activos"})
 	public Response activos(){

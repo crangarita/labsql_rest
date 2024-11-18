@@ -37,5 +37,17 @@ public class FileService {
 			throw new RuntimeException("FAIL!");
 		}
 	}
+    public void deleteFile(String filename) {
+        try {
+            Path filePath = rootLocation.resolve(filename + ".jpg");
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            } else {
+                throw new RuntimeException("El archivo no existe: " + filename);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error al eliminar el archivo: " + filename, e);
+        }
+    }
 
 }
