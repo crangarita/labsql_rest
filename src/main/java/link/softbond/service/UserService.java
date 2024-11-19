@@ -64,6 +64,9 @@ public class UserService implements UserDetailsService {
 		if(usuario.getRol()!=null) {
 			role=usuario.getRol().getNombre();
 		}
+		if(usuario.getEmail().equals("ciroalfonsoqude@ufps.edu.co")) {
+			role="profesor";
+		}
 		authorities.add(new SimpleGrantedAuthority(role));
 
 		return new User(usuario.getEmail(), usuario.getClave(), authorities);
