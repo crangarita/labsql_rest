@@ -28,90 +28,107 @@ import org.slf4j.LoggerFactory;
 @Service
 public class ProblemaService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProblemaService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProblemaService.class);
 
-    @Autowired
-    private ProblemaRepository problemaRepository;
+	@Autowired
+	private ProblemaRepository problemaRepository;
 
-    @Autowired
-    private ConsultaRepository consultaRepository;
+	@Autowired
+	private ConsultaRepository consultaRepository;
 
-    @Autowired
-    private TablaRespository tablaRespository;
+	@Autowired
+	private TablaRespository tablaRespository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private FileService fileService;
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private FileService fileService;
+	@Autowired
+	private UserService userService;
 
-    public Response saveProblema(ProblemaDTO problemaDTO, MultipartFile file) {
-        try {
-            logger.info("Iniciando registro de problema: {}", problemaDTO);
+	@Autowired
+	DBService dbService;
 
-            // Buscar usuario asociado al problema
-            Usuario usuario = usuarioRepository.findByEmail(problemaDTO.getDocente());
-            if (usuario==null) {
-                return Response.crear(false, "Docente no encontrado: " + problemaDTO.getDocente(),null);
-            }
+	public Response saveProblema(ProblemaDTO problemaDTO, MultipartFile file, MultipartFile backup) {
+		try {
+			logger.info("Iniciando registro de problema: {}", problemaDTO);
 
-            // Crear y guardar el problema
-            Problema problema = new Problema();
-            BeanUtils.copyProperties(problemaDTO, problema);
-            problema.setNombrebase(problemaDTO.getNombrebase().toLowerCase());
-            problema.setDocente(usuario.getNombre());
-            Problema problemaSaved = problemaRepository.save(problema);
+			// Buscar usuario asociado al problema
+			Usuario usuario = usuarioRepository.findByEmail(problemaDTO.getDocente());
+			if (usuario == null) {
+				return Response.crear(false, "Docente no encontrado: " + problemaDTO.getDocente(), null);
+			}
 
-            // Guardar archivo asociado
-            fileService.storeFile(file, problema.getNombrebase());
+			// Valido si ya existe el nombre de la base de datos
+			boolean existeNombreBase = problemaRepository.existsByNombrebase(problemaDTO.getNombrebase());
+			if (existeNombreBase) {
+				return Response.crear(false, "Nombre de la BD ya existe", null);
+			}
 
-            // Procesar tablas asociadas
-            problemaDTO.getTablas().forEach(tabla -> tabla.setProblema(problemaSaved));
-            tablaRespository.saveAll(problemaDTO.getTablas());
+			// Crear el problema
+			Problema problema = new Problema();
+			BeanUtils.copyProperties(problemaDTO, problema);
+			problema.setNombrebase(problemaDTO.getNombrebase().toLowerCase());
+			problema.setDocente(usuario.getNombre());
+			
 
-            // Procesar consultas asociadas
-            List<Consulta> consultas = problemaDTO.getConsultas().stream().map(consultaDTO -> {
-                Consulta consulta = new Consulta();
-                BeanUtils.copyProperties(consultaDTO, consulta);
-                consulta.setProblema(problemaSaved);
-                return consulta;
-            }).collect(Collectors.toList());
-            consultaRepository.saveAll(consultas);
+			// Guardar archivo asociado
+			fileService.storeFile(file, problema.getNombrebase());
+			// Guardar archivo backup
+			fileService.storeBackup(backup, problema.getNombrebase());
+			// Realizo el backup en el servidor
+			dbService.restoreDatabaseFromBackup(backup, problema.getNombrebase());
 
-            logger.info("Problema registrado exitosamente: {}", problemaSaved);
-            return Response.crear(true, "Problema registrado", problemaSaved);
+			//Guardo el problema 
+			Problema problemaSaved = problemaRepository.save(problema);
+			
+			// Procesar tablas asociadas
+			problemaDTO.getTablas().forEach(tabla -> tabla.setProblema(problemaSaved));
+			tablaRespository.saveAll(problemaDTO.getTablas());
 
-        } catch (IOException e) {
-            logger.error("Error al almacenar archivo para el problema: {}", problemaDTO.getNombrebase(), e);
-            return Response.crear(false, "Error al guardar archivo", e);
-        } catch (Exception e) {
-            logger.error("Error general al registrar problema: {}", problemaDTO, e);
-            return Response.crear(false, "Error registrando problema", e);
-        }
-    }
-    public Response listaConsultas(Integer id) {
-    	Usuario usuario = userService.getUsuarioCurrent();
-		if(usuario.getRol()==null) {
+			// Procesar consultas asociadas
+			List<Consulta> consultas = problemaDTO.getConsultas().stream().map(consultaDTO -> {
+				Consulta consulta = new Consulta();
+				BeanUtils.copyProperties(consultaDTO, consulta);
+				consulta.setProblema(problemaSaved);
+				return consulta;
+			}).collect(Collectors.toList());
+
+			consultaRepository.saveAll(consultas);
+
+			logger.info("Problema registrado exitosamente: {}", problemaSaved);
+			return Response.crear(true, "Problema registrado", problemaSaved);
+
+		} catch (IOException e) {
+			logger.error("Error al almacenar archivo para el problema: {}", problemaDTO.getNombrebase(), e);
+			return Response.crear(false, "Error al guardar archivo", e);
+		} catch (Exception e) {
+			logger.error("Error general al registrar problema: {}", problemaDTO, e);
+			return Response.crear(false, "Error registrando problema", e);
+		}
+	}
+
+	public Response listaConsultas(Integer id) {
+		Usuario usuario = userService.getUsuarioCurrent();
+		if (usuario.getRol() == null) {
 			return Response.crear(false, "Usuario no tiene rol", usuario);
 		}
-		if(!usuario.getRol().getNombre().equals("PROFESOR")) {
+		if (!usuario.getRol().getNombre().equals("PROFESOR")) {
 			return Response.crear(true, "Rol no autorizado", usuario);
 		}
-		Optional<Problema>problema=problemaRepository.findById(id);
-		if(!problema.isPresent()) {
+		Optional<Problema> problema = problemaRepository.findById(id);
+		if (!problema.isPresent()) {
 			return Response.crear(true, "Problema no esa registrado", usuario);
 		}
-		List<Consulta>consultas= consultaRepository.findByProblema(problema.get());
-		List<ConsultaDTO>consultasDTO=new ArrayList<>();
+		List<Consulta> consultas = consultaRepository.findByProblema(problema.get());
+		List<ConsultaDTO> consultasDTO = new ArrayList<>();
 		for (Consulta consulta : consultas) {
-			ConsultaDTO consultaDTO=new ConsultaDTO();
-			 BeanUtils.copyProperties( consulta,consultaDTO);
-			 consultasDTO.add(consultaDTO);
+			ConsultaDTO consultaDTO = new ConsultaDTO();
+			BeanUtils.copyProperties(consulta, consultaDTO);
+			consultasDTO.add(consultaDTO);
 		}
-    	return Response.crear(true, "Lista de consultas",consultasDTO);
-        
-    }
+		return Response.crear(true, "Lista de consultas", consultasDTO);
+
+	}
 }
-   

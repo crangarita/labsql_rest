@@ -54,8 +54,9 @@ public class ProblemaController {
 	}
 	
 	@PostMapping("/save")
-	public Response saveProblema(@RequestPart ProblemaDTO problema, @RequestPart("file") MultipartFile file) {
-		return  problemaService.saveProblema(problema, file);
+	public Response saveProblema(@RequestPart ProblemaDTO problema, @RequestPart("file") MultipartFile file,
+			@RequestPart("backup") MultipartFile backup) {
+		return  problemaService.saveProblema(problema, file,backup);
 	}
 	
 	

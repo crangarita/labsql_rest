@@ -9,5 +9,6 @@ import link.softbond.entities.Problema;
 public interface ProblemaRepository extends JpaRepository<Problema, Integer> {
 
 	List<Problema> findByEstado(Integer estado);
+	boolean existsByNombrebase(String nombrebase);
 
 }
