@@ -8,16 +8,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import link.softbond.util.Response;
+import link.softbond.dto.ConsultaDTO;
+import link.softbond.entities.Consulta;
 import link.softbond.entities.Practica;
 import link.softbond.entities.Usuario;
 import link.softbond.repositorios.ConsultaRepository;
 import link.softbond.repositorios.DBRepository;
 import link.softbond.repositorios.PracticaRepository;
+import link.softbond.service.ConsultaService;
 import link.softbond.service.PracticaService;
 import link.softbond.service.UserService;
 
@@ -32,14 +36,14 @@ public class ConsultaController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private ConsultaRepository consultaRepository;
+
 
 	@Autowired
 	private PracticaService practicaService;
-
 	@Autowired
-	private DBRepository dBRepository;
+	private ConsultaService consultaService;
+
+	
 
 	@GetMapping("/practicas/usuario")
 	public Response consultasPracticasUsuario() {
@@ -87,6 +91,15 @@ public class ConsultaController {
 
 		return result;
 
+	}
+	
+	@PostMapping("/save")
+	public Response saveConsulta(@RequestBody ConsultaDTO consulta) {
+		return consultaService.saveConsulta(consulta);
+	}
+	@PutMapping("/update")
+	public Response updateConsulta(@RequestBody ConsultaDTO consulta) {
+		return consultaService.saveConsulta(consulta);
 	}
 
 }

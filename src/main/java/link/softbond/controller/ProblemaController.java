@@ -48,6 +48,10 @@ public class ProblemaController {
 		return Response.crear(true, null, problemas.toArray());
 
 	}
+	@PutMapping("/update")
+	public Response updateProblema(@RequestBody Problema problema) {
+		return problemaService.updateProblema(problema);
+	}
 	@GetMapping("/{id}/consultas/profesor")
 	public Response listaConsultasProblema(@PathVariable Integer id) {
 		return problemaService.listaConsultas(id);

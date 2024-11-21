@@ -11,6 +11,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,12 @@ import link.softbond.DataSourceConfig;
 public class DBService {
     
     private final DataSourceConfig dataSourceConfig;
+    @Value("${db.url}")
+    private  String host;
+    @Value("${db.username}")
+    private  String username;
+    @Value("${db.password}")
+    private  String password;
 
     @Autowired
     public DBService(DataSourceConfig dataSourceConfig) {
@@ -32,9 +39,11 @@ public class DBService {
     
     public void seleccionar(String database) {
     	String driverClassName = "com.mysql.cj.jdbc.Driver";
-    	String url = "jdbc:mysql://localhost:3306/"+database+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    	String username = "root";
-    	String password = "Lab2020.";
+    	//
+    	//jdbc:mysql://localhost:3306/
+    	String url = host+database+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+    	//String username = "root";
+    	//String password = "Lab2020.";
         dataSourceConfig.setDataSourceProperties(driverClassName, url, username, password);
         dataSourceConfig.updateDataSource();
     }

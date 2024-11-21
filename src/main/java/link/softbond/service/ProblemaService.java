@@ -49,6 +49,20 @@ public class ProblemaService {
 
 	@Autowired
 	DBService dbService;
+	
+	public Response updateProblema(Problema problema) {
+		Optional<Problema>problemaCurrent=problemaRepository.findById(problema.getId());
+		if(!problemaCurrent.isPresent()) {
+			return Response.crear(false, "Problema esta registrado", null);
+			
+		}
+		Problema problemaReturn=problemaCurrent.get();
+		problemaReturn.setNombre(problema.getNombre());
+		problemaReturn.setDescripcion(problema.getDescripcion());
+		problemaReturn.setDocente(problema.getDocente());
+		problemaReturn.setEstado(problema.getEstado());
+		return Response.crear(true, "Problema Actualizado", problemaRepository.save(problemaReturn));
+	}
 
 	public Response saveProblema(ProblemaDTO problemaDTO, MultipartFile file, MultipartFile backup) {
 		try {
