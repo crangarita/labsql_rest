@@ -87,12 +87,13 @@ public class ProblemaService {
 			problema.setDocente(usuario.getNombre());
 			
 
+			// Realizo el backup en el servidor
+			dbService.restoreDatabaseFromBackup(backup, problema.getNombrebase());
 			// Guardar archivo asociado
 			fileService.storeFile(file, problema.getNombrebase());
 			// Guardar archivo backup
 			fileService.storeBackup(backup, problema.getNombrebase());
-			// Realizo el backup en el servidor
-			dbService.restoreDatabaseFromBackup(backup, problema.getNombrebase());
+			
 
 			//Guardo el problema 
 			Problema problemaSaved = problemaRepository.save(problema);
