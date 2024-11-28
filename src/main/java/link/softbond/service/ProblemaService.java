@@ -66,7 +66,7 @@ public class ProblemaService {
 
 	public Response saveProblema(ProblemaDTO problemaDTO, MultipartFile file, MultipartFile backup) {
 		try {
-			logger.info("Iniciando registro de problema: {}", problemaDTO);
+			logger.info("Iniciando registro de problema: {}", problemaDTO.getNombrebase());
 
 			// Buscar usuario asociado al problema
 			Usuario usuario = usuarioRepository.findByEmail(problemaDTO.getDocente());
@@ -75,7 +75,7 @@ public class ProblemaService {
 			}
 
 			// Valido si ya existe el nombre de la base de datos
-			boolean existeNombreBase = problemaRepository.existsByNombrebase(problemaDTO.getNombrebase());
+			boolean existeNombreBase = problemaRepository.existsByNombrebase(problemaDTO.getNombrebase().toLowerCase());
 			if (existeNombreBase) {
 				return Response.crear(false, "Nombre de la BD ya existe", null);
 			}
@@ -112,7 +112,7 @@ public class ProblemaService {
 
 			consultaRepository.saveAll(consultas);
 
-			logger.info("Problema registrado exitosamente: {}", problemaSaved);
+			logger.info("Problema registrado exitosamente: {}", problemaSaved.getNombrebase());
 			return Response.crear(true, "Problema registrado", problemaSaved);
 
 		} catch (IOException e) {
@@ -127,14 +127,14 @@ public class ProblemaService {
 	public Response listaConsultas(Integer id) {
 		Usuario usuario = userService.getUsuarioCurrent();
 		if (usuario.getRol() == null) {
-			return Response.crear(false, "Usuario no tiene rol", usuario);
+			return Response.crear(false, "Usuario no tiene rol", null);
 		}
 		if (!usuario.getRol().getNombre().equals("PROFESOR")) {
-			return Response.crear(true, "Rol no autorizado", usuario);
+			return Response.crear(false, "Rol no autorizado", null);
 		}
 		Optional<Problema> problema = problemaRepository.findById(id);
 		if (!problema.isPresent()) {
-			return Response.crear(true, "Problema no esa registrado", usuario);
+			return Response.crear(false, "Problema no esa registrado", null);
 		}
 		List<Consulta> consultas = consultaRepository.findByProblema(problema.get());
 		List<ConsultaDTO> consultasDTO = new ArrayList<>();
