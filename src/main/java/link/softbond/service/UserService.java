@@ -40,6 +40,11 @@ public class UserService implements UserDetailsService {
 	private String appBaseUrl;
 	@Autowired
 	private JWTService jwtService;
+	
+	public Response listaUsuarios() {
+		return Response.crear(true, "Lista de usuarios", usuarioRepository.findAll());
+		
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -63,9 +68,6 @@ public class UserService implements UserDetailsService {
 		String role="USUARIO";
 		if(usuario.getRol()!=null) {
 			role=usuario.getRol().getNombre();
-		}
-		if(usuario.getEmail().equals("ciroalfonsoqude@ufps.edu.co")) {
-			role="profesor";
 		}
 		authorities.add(new SimpleGrantedAuthority(role));
 

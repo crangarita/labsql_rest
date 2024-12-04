@@ -53,10 +53,9 @@ public class ConsultaController {
 
 	}
 
-	@GetMapping("/practica/opcion/{idOld}/old/{idnew}/new")
-	public Response practicaUltimaOpcion(@PathVariable Integer idOld, @PathVariable Integer idNew) {
-
-		return practicaService.actualizarUltimaOpcion(idOld, idNew);
+	@GetMapping("/practica/opcion/{idOld}/old/{nueva}/new")
+	public Response practicaUltimaOpcion(@PathVariable Integer idOld, @PathVariable Integer nueva) {
+		return practicaService.actualizarUltimaOpcion(idOld, nueva);
 
 	}
 

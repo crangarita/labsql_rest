@@ -107,6 +107,7 @@ public class ProblemaService {
 				Consulta consulta = new Consulta();
 				BeanUtils.copyProperties(consultaDTO, consulta);
 				consulta.setProblema(problemaSaved);
+				consulta.setEstado(0);
 				return consulta;
 			}).collect(Collectors.toList());
 
