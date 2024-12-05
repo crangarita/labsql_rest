@@ -12,46 +12,46 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-@Entity 
+@Entity
 @Data
-public class                                  Consulta implements Serializable {
+public class Consulta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	private String descripcion;
-	
+
 	private String explicacion;
-	
-	@JsonIgnore
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String solucion;
-	
-	@JsonIgnore
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String explicsolucion;
-	
-	@JsonIgnore
+
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String solucionalternativa;
-	
+
+
 	private Integer numpracticas;
-	
+
 	private Integer estado;
 
-	private Boolean ultimaOpcion;
-	
 	@ManyToOne
-	@JoinColumn(name="idproblema")
+	@JoinColumn(name = "idproblema")
 	private Problema problema;
-	
-	@OneToMany(mappedBy="consulta")
+
+	@OneToMany(mappedBy = "consulta")
 	@JsonIgnore
 	private List<Practica> practicas;
-	
-	@OneToMany(mappedBy="consulta")
+
+	@OneToMany(mappedBy = "consulta")
 	@JsonIgnore
 	private List<Opcion> opciones;
 

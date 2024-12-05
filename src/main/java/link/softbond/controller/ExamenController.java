@@ -45,12 +45,11 @@ public class ExamenController {
 
 	}
 
-	@PostMapping
+	@PostMapping("/save")
 	public Response crear(@RequestBody Examen examen){
 
-		examenRepository.save(examen);
 
-		return Response.crear(true, null, examen);
+		return Response.crear(true, null, examenService.crearExamen(examen));
 
 	}
 	

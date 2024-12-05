@@ -20,6 +20,12 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    
+    @GetMapping("/profesor")
+    public Response listaUsuarios() {
+    	
+    	return userService.listaUsuarios();
+    }
 
     @PostMapping({"/register"})
     public Response registerUsuario(@RequestBody @Valid UserRegisterRequest usuario) {

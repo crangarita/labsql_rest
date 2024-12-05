@@ -39,5 +39,11 @@ public class Usuario implements Serializable {
 	private String estado;
 	@Column(name="codigo_temporal")
 	private String codigoTemporal;
+	@ManyToOne
+	@JoinColumn(name="rol_id")
+	private Rol rol;
+	@JsonIgnore
+	@OneToMany(mappedBy = "usuario")
+    private List<Practica> practicas;
 
 }

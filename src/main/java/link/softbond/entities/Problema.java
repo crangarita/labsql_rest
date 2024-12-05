@@ -27,6 +27,7 @@ public class Problema implements Serializable {
 	private String descripcion;
 
 	private String docente;
+	
 
 	private String nombrebase;
 	

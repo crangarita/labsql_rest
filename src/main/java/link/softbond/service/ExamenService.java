@@ -7,6 +7,8 @@ import link.softbond.entities.Problema;
 import link.softbond.entities.Usuario;
 import link.softbond.repositorios.ExamenRepository;
 import link.softbond.repositorios.OpcionRepository;
+import link.softbond.util.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,93 +21,90 @@ import java.util.Optional;
 @Service
 public class ExamenService {
 
-    @Autowired
-    ExamenRepository examenRepository;
+	@Autowired
+	ExamenRepository examenRepository;
 
-    @Autowired
-    OpcionRepository opcionRepository;
-    
+	@Autowired
+	OpcionRepository opcionRepository;
+
 	@Autowired
 	private UserService userService;
 
-    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public void crearExamen(Examen examen) {
-        examen.setToken(generateToken());
-        examenRepository.save(examen);
+	public Response crearExamen(Examen examen) {
+		examen.setToken(generateToken());
+		return Response.crear(true, "Examen registrado", examenRepository.save(examen));
 
-    }
-    
-    public List<Opcion> generarExamen(int usuarioId, Integer examenId){
-    	Optional<Examen> examenOptional = examenRepository.findById(examenId);
-    	if(examenOptional.isPresent()) {
-    		Examen examen = examenOptional.get();
-    		String examenToken = examen.getToken();
-    		
-    		return generarExamen(usuarioId, examenToken);
-    		
-    	}
-    	
-    	return null;
-    }
+	}
 
-    public List<Opcion> generarExamen(int usuarioId, String examenToken){
+	public List<Opcion> generarExamen(int usuarioId, Integer examenId) {
+		Optional<Examen> examenOptional = examenRepository.findById(examenId);
+		if (examenOptional.isPresent()) {
+			Examen examen = examenOptional.get();
+			String examenToken = examen.getToken();
 
-        Examen examen = examenRepository.findByToken(examenToken);
+			return generarExamen(usuarioId, examenToken);
 
+		}
 
-        Problema problema = examen.getProblema();
-        List<Consulta> consultas = problema.getConsultas();
-        List<Opcion> opciones = new ArrayList<>();
+		return null;
+	}
 
-        Collections.shuffle(consultas);
-        int j = 0;
-        for (int i = 0; i < examen.getCantidad(); i++) {
-            Consulta consulta = consultas.get(j);
-            if(consulta.getEstado()==0){
-                Opcion opcion = new Opcion();
-                opcion.setConsulta(consulta);
-                opcion.setExamen(examen);
-                opcion.setUsuario(usuarioId);
-                opcionRepository.save(opcion);
-            }else{
-                i--;
-            }
-            j++;
-        }
-        return opciones;
-    }
+	public List<Opcion> generarExamen(int usuarioId, String examenToken) {
 
-    public static String generateToken() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder token = new StringBuilder(6);
+		Examen examen = examenRepository.findByToken(examenToken);
 
-        for (int i = 0; i < 6; i++) {
-            int randomIndex = random.nextInt(ALPHABET.length());
-            char randomChar = ALPHABET.charAt(randomIndex);
-            token.append(randomChar);
-        }
+		Problema problema = examen.getProblema();
+		List<Consulta> consultas = problema.getConsultas();
+		List<Opcion> opciones = new ArrayList<>();
 
-        return token.toString();
-    }
-    
-    
-    public List<Consulta> getConsultas(Integer problemaId) {
-    	
-    	Usuario usuario = userService.getUsuarioCurrent();
-		
+		Collections.shuffle(consultas);
+		int j = 0;
+		for (int i = 0; i < examen.getCantidad(); i++) {
+			Consulta consulta = consultas.get(j);
+			if (consulta.getEstado() == 0) {
+				Opcion opcion = new Opcion();
+				opcion.setConsulta(consulta);
+				opcion.setExamen(examen);
+				opcion.setUsuario(usuarioId);
+				opcionRepository.save(opcion);
+			} else {
+				i--;
+			}
+			j++;
+		}
+		return opciones;
+	}
+
+	public static String generateToken() {
+		SecureRandom random = new SecureRandom();
+		StringBuilder token = new StringBuilder(6);
+
+		for (int i = 0; i < 6; i++) {
+			int randomIndex = random.nextInt(ALPHABET.length());
+			char randomChar = ALPHABET.charAt(randomIndex);
+			token.append(randomChar);
+		}
+
+		return token.toString();
+	}
+
+	public List<Consulta> getConsultas(Integer problemaId) {
+
+		Usuario usuario = userService.getUsuarioCurrent();
+
 		List<Opcion> opciones = opcionRepository.findByUsuarioAndExamenId(usuario.getId(), problemaId);
-		
+
 		List<Consulta> consultas = new ArrayList<>();
-		
+
 		if (!opciones.isEmpty()) {
-			for(Opcion opcion: opciones) {
+			for (Opcion opcion : opciones) {
 				consultas.add(opcion.getConsulta());
 			}
 		}
-		
-		return consultas;
-    }
 
+		return consultas;
+	}
 
 }
