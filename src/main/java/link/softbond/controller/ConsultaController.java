@@ -49,8 +49,13 @@ public class ConsultaController {
 	public Response consultasPracticasUsuario() {
 
 		Usuario usuario = userService.getUsuarioCurrent();
-		return practicaService.listaPracticasUsuario(usuario.getId());
+		return practicaService.listaPracticasUsuario(usuario);
 
+	}
+	
+	@GetMapping("/practicas/examen/{id}")
+	public Response practiasDelExamen(@PathVariable Integer id) {
+		return practicaService.obtenerPracticasPorExamen(id);
 	}
 
 	@GetMapping("/practica/opcion/{idOld}/old/{nueva}/new")
@@ -66,7 +71,7 @@ public class ConsultaController {
 
 		Usuario usuario = userService.getUsuarioCurrent();
 
-		List<Practica> practicas = practicaRepository.findByUsuarioAndConsultaId(usuario.getId(), id);
+		List<Practica> practicas = practicaRepository.findByUsuarioAndConsultaId(usuario, id);
 
 		return Response.crear(true, null, practicas.toArray());
 

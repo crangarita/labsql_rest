@@ -42,5 +42,8 @@ public class Usuario implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="rol_id")
 	private Rol rol;
+	@JsonIgnore
+	@OneToMany(mappedBy = "usuario")
+    private List<Practica> practicas;
 
 }

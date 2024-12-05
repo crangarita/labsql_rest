@@ -22,7 +22,10 @@ public class Practica implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	private Integer usuario;
+	@ManyToOne
+	@JoinColumn(name = "usuario")
+	private Usuario usuario;
+	//private Integer usuario;
 	
 	private String ssql;
 	
